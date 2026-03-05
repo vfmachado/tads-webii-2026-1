@@ -11,20 +11,17 @@
     "build": "tsc",
     "start": "node dist/index.js"
   },
-  "keywords": [
-    "typescript",
-    "express"
-  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "express": "^4.21.2"
+    "ejs": "^4.0.1",
+    "express": "4.21.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.13.10",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.2"
+    "@types/express": "4.17.21",
+    "@types/node": "22.13.10",
+    "ts-node-dev": "2.0.0",
+    "typescript": "5.8.2"
   }
 }
