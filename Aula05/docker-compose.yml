@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      target: runtime
+    container_name: aula02-app
+    ports:
+      - "3333:3333"
+    environment:
+      - PORT=3333
+
+  app-dev:
+    build:
+      context: .
+      target: dev
+    container_name: aula02-app-dev
+    ports:
+      - "3333:3333"
+    environment:
+      - PORT=3333
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev:container
+    profiles:
+      - dev
