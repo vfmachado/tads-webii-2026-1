@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MarketMVP | Criar conta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ["Space Grotesk", "sans-serif"],
+              body: ["Plus Jakarta Sans", "sans-serif"],
+            },
+            colors: {
+              brand: { 50: "#F8F7F2", 100: "#EDE8D8", 200: "#D9CEAA", 300: "#C7B57D", 400: "#B99B56", 500: "#A8853A", 600: "#886B2F", 700: "#665024", 800: "#43361A", 900: "#251E10" },
+              accent: { 500: "#0A7D7A", 600: "#075F5D" },
+              coral: { 500: "#E66A4E", 600: "#C85339" },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .grid-bg {
+        background-image: radial-gradient(#d9ceaa 0.8px, transparent 0.8px), radial-gradient(#d9ceaa 0.8px, #f8f7f2 0.8px);
+        background-size: 28px 28px;
+        background-position: 0 0, 14px 14px;
+      }
+    </style>
+  </head>
+  <body class="font-body bg-brand-50 text-brand-900">
+    <div class="min-h-screen grid-bg">
+      <header class="border-b border-brand-200/80 bg-white/75 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+          <a href="/" class="font-display text-xl font-bold">MarketMVP</a>
+          <a href="/login" class="rounded-full border border-brand-300 px-4 py-2 text-sm font-semibold hover:bg-brand-100">Já tem uma conta?</a>
+        </div>
+      </header>
+
+      <main class="mx-auto flex max-w-7xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+        <section class="w-full max-w-2xl rounded-3xl border border-brand-200 bg-white p-6 shadow-sm">
+          <h1 class="font-display text-3xl font-bold">Crie sua conta</h1>
+          <p class="mt-1 text-sm text-brand-700">Escolha um perfil de comprador ou vendedor e comece a usar a plataforma.</p>
+
+          <% if (error) { %>
+            <p class="mt-4 rounded-xl border border-coral-500/30 bg-coral-500/10 px-4 py-3 text-sm font-semibold text-coral-600"><%= error %></p>
+          <% } %>
+
+          <form action="/signup" method="POST" class="mt-5 grid gap-4 sm:grid-cols-2">
+            <label class="block sm:col-span-1">
+              <span class="mb-1 block text-sm font-medium">Nome</span>
+              <input name="name" type="text" value="<%= values.name || '' %>" required class="w-full rounded-xl border border-brand-300 px-4 py-2.5 outline-none ring-coral-500 focus:ring" />
+            </label>
+            <label class="block sm:col-span-1">
+              <span class="mb-1 block text-sm font-medium">CPF</span>
+              <input name="cpf" type="text" value="<%= values.cpf || '' %>" required class="w-full rounded-xl border border-brand-300 px-4 py-2.5 outline-none ring-coral-500 focus:ring" />
+            </label>
+            <label class="block sm:col-span-2">
+              <span class="mb-1 block text-sm font-medium">Email</span>
+              <input name="email" type="email" value="<%= values.email || '' %>" required class="w-full rounded-xl border border-brand-300 px-4 py-2.5 outline-none ring-coral-500 focus:ring" />
+            </label>
+            <label class="block sm:col-span-1">
+              <span class="mb-1 block text-sm font-medium">Senha</span>
+              <input name="password" type="password" required class="w-full rounded-xl border border-brand-300 px-4 py-2.5 outline-none ring-coral-500 focus:ring" />
+            </label>
+            <label class="block sm:col-span-1">
+              <span class="mb-1 block text-sm font-medium">Confirmar senha</span>
+              <input name="confirmPassword" type="password" required class="w-full rounded-xl border border-brand-300 px-4 py-2.5 outline-none ring-coral-500 focus:ring" />
+            </label>
+            <label class="block sm:col-span-2">
+              <span class="mb-1 block text-sm font-medium">Tipo de conta</span>
+              <select name="role" class="w-full rounded-xl border border-brand-300 px-4 py-2.5 outline-none ring-coral-500 focus:ring">
+                <option value="buyer" <%= values.role === 'buyer' ? 'selected' : '' %>>Comprador</option>
+                <option value="seller" <%= values.role === 'seller' ? 'selected' : '' %>>Vendedor</option>
+              </select>
+            </label>
+            <button type="submit" class="sm:col-span-2 rounded-xl bg-brand-900 px-4 py-2.5 font-semibold text-brand-50 hover:bg-brand-800">Criar conta</button>
+          </form>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

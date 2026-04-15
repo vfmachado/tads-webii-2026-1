@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  cpf       String   @unique
+  role      String   @default("buyer")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Products   Product[]
+  // Addresses  Address[]
+  // Orders     Order[]
+}
+
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  category    String
+  price       Float
+  stock       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      Int
+  User        User     @relation(fields: [userId], references: [id])
+}
+
+// model Address {
+//   id        Int      @id @default(autoincrement())
+//   street    String
+//   city      String
+//   state     String
+//   zipCode   String
+//   // ... outros atributos.
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   userId    Int
+//   User      User     @relation(fields: [userId], references: [id])
+// }
+
+// model Order {
+//   id        Int      @id @default(autoincrement())
+//   total     Float
+//   // ... outros atributos.
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   userId    Int
+//   User      User     @relation(fields: [userId], references: [id])
+// }
+
+// model OrderItem {
+//   id        Int      @id @default(autoincrement())
+//   quantity  Int
+//   price     Float
+//   // ... outros atributos.
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   orderId   Int
+//   Order     Order    @relation(fields: [orderId], references: [id])
+
+//   productId Int
+//   Product   Product  @relation(fields: [productId], references: [id])
+// }
