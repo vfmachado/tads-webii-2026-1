@@ -77,7 +77,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// ALTERAR A ROTA PARA O PADRAO DO PROJETO
 app.get('/', async (req, res) => {
+  // localhost:3333/ ?search=celular
   const search = String(req.query.search || '').trim();
 
   const products = await prisma.product.findMany({
@@ -118,42 +120,45 @@ app.get('/signup', (req, res) => {
   });
 });
 
+import * as z from 'zod';
+const Signup = z.object({
+  name: z.string().min(3, 'O nome é obrigatório. Minimo de 3 caracteres.').max(100, 'O nome deve ter no máximo 100 caracteres.'),
+  cpf: z.string()
+    .min(11, 'O CPF é obrigatório. Deve conter 11 caracteres.').max(11, 'O CPF deve conter 11 caraceres'),
+  email: z.email('Email inválido.'),
+  password: z.string().min(6, 'A senha é obrigatória. Minimo de 6 caracteres.').max(100, 'A senha deve ter no máximo 100 caracteres.'),
+  confirmPassword: z.string().min(6, 'A confirmação de senha é obrigatória. Minimo de 6 caracteres.').max(100, 'A confirmação de senha deve ter no máximo 100 caracteres.'),
+  role: z.enum(['buyer', 'seller'], 'Escolha comprador ou vendedor para criar sua conta.'),
+
+}).refine(data => data.password === data.confirmPassword, {
+  message: 'As senhas informadas nao conferem.'
+});
+
+// ZOD YUP JOI
 app.post('/signup', async (req, res) => {
-  const name = String(req.body.name || '').trim();
-  const cpf = String(req.body.cpf || '').trim();
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const password = String(req.body.password || '');
-  const confirmPassword = String(req.body.confirmPassword || '');
-  const role = String(req.body.role || 'buyer');
-
-  const values = { name, cpf, email, role };
-
-  if (!name || !cpf || !email || !password || !confirmPassword || !role) {
-    return res.status(400).render('signup', {
-      error: 'Preencha todos os campos para criar sua conta.',
-      values,
+  
+  const payload = req.body;
+  const {success, data, error } = Signup.safeParse(payload);
+  
+  // melhorar
+  if (!success) {
+    console.log({ error})
+    // const error = error.map((err) => err.message).join(' ');
+    // return res.status(400).render('signup', {
+    //   error,
+    //   values: payload,
+    // });
+    return res.render('signup', {
+      error: error.message,
+      values: payload,
     });
   }
-
-  if (!PUBLIC_SIGNUP_ROLES.includes(role)) {
-    return res.status(400).render('signup', {
-      error: 'Escolha comprador ou vendedor para criar sua conta.',
-      values,
-    });
-  }
-
-  if (password !== confirmPassword) {
-    return res.status(400).render('signup', {
-      error: 'As senhas informadas nao conferem.',
-      values,
-    });
-  }
-
+  
   const existingUser = await prisma.user.findFirst({
     where: {
       OR: [
-        { cpf },
-        { email },
+        { cpf: data.cpf },
+        { email: data.email },
       ],
     },
   });
@@ -161,20 +166,19 @@ app.post('/signup', async (req, res) => {
   if (existingUser) {
     return res.status(400).render('signup', {
       error: 'Ja existe uma conta com este CPF ou email.',
-      values,
+      // values,
     });
   }
 
+  const { confirmPassword, ...userData } = data;
   const user = await prisma.user.create({
     data: {
-      name,
-      cpf,
-      email,
-      password: hashPassword(password),
-      role,
+      ...userData,
+      password: hashPassword(data.password),
     },
   });
 
+  // quando o cadastro é feito, uma sessao já é gerada e nao preciso fazer o login
   req.session.user = {
     id: user.id,
     name: user.name,
@@ -198,6 +202,7 @@ app.get('/login', (req, res) => {
   });
 });
 
+// EXERCICIO - É AJUSTAR PARA O PADRAO MVC
 app.post('/login', async (req, res) => {
   const email = String(req.body.email || '').trim().toLowerCase();
   const password = String(req.body.password || '');

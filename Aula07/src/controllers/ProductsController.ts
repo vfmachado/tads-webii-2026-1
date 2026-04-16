@@ -37,6 +37,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 router.post('/', requireSeller, async (req: Request, res: Response) => {
+  // validacao precisa ser mais inteligente (zod)
   const name = String(req.body.name || '').trim();
   const description = String(req.body.description || '').trim();
   const category = String(req.body.category || '').trim();
