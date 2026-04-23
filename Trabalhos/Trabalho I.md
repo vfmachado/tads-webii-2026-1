@@ -112,4 +112,3 @@ Regras para desativacao:
 ## Observacoes
 
 - E permitido evoluir layout e componentes do template, desde que a identidade base seja mantida.
-
